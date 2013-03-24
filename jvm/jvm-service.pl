@@ -7,7 +7,30 @@ use IO::Socket::INET;
 
 sub stats {
     my $jvmport = shift(@_);
-    return "hoho" . $jvmport;
+
+    my @netstat = `netstat -nlpt`;
+    my $pid = 0;
+    foreach my $line (@netstat) {
+        if ($line =~ /.*?:$jvmport\s.*?([0-9]+)\/java\s*$/) {
+            $pid = $1;
+            last;
+        }
+    }
+    if (!$pid) {
+        return 0;
+    }
+
+    my $result = '';
+
+    my @jstat = `jstat -gc $pid`;
+    map { s/^\s+|\s+$// } @jstat;
+    my @jstat_keys = split(/\s+/, $jstat[0]);
+    my @jstat_vals = split(/\s+/, $jstat[1]);
+    for my $i (0 .. $#jstat_keys) {
+        $result .= $jstat_keys[$i] . ' ' . $jstat_vals[$i] . "\n";
+    }
+    return $result;
+
 }
 
 my $help = 0;
@@ -60,7 +83,7 @@ JVM Statistics
 
 =head1 SYNOPSIS
 
-jvmstat.sh [options]
+jvm-server.pl [options]
 
  Options:
    -help brief help message
