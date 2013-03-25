@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2013-03-25T05:35:09Z</date>
+    <date>2013-03-25T07:00:53Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -209,7 +209,7 @@
                             <name>$1 $2</name>
                             <type>0</type>
                             <snmp_community/>
-                            <multiplier>0</multiplier>
+                            <multiplier>1</multiplier>
                             <snmp_oid/>
                             <key>iostat[{#DEVNAME},rkB/s]</key>
                             <delay>60</delay>
@@ -224,7 +224,7 @@
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
                             <snmpv3_authpassphrase/>
                             <snmpv3_privpassphrase/>
-                            <formula>1</formula>
+                            <formula>1024</formula>
                             <delay_flex/>
                             <params/>
                             <ipmi_sensor/>
@@ -248,7 +248,7 @@
                             <name>$1 $2</name>
                             <type>0</type>
                             <snmp_community/>
-                            <multiplier>0</multiplier>
+                            <multiplier>1</multiplier>
                             <snmp_oid/>
                             <key>iostat[{#DEVNAME},wkB/s]</key>
                             <delay>60</delay>
@@ -263,7 +263,7 @@
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
                             <snmpv3_authpassphrase/>
                             <snmpv3_privpassphrase/>
-                            <formula>1</formula>
+                            <formula>1024</formula>
                             <delay_flex/>
                             <params/>
                             <ipmi_sensor/>
