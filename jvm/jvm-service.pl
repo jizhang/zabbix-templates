@@ -23,14 +23,42 @@ sub stats {
     my $result = '';
 
     my @jstat = `jstat -gc $pid`;
-    map { s/^\s+|\s+$// } @jstat;
-    my @jstat_keys = split(/\s+/, $jstat[0]);
-    my @jstat_vals = split(/\s+/, $jstat[1]);
-    for my $i (0 .. $#jstat_keys) {
-        $result .= $jstat_keys[$i] . ' ' . $jstat_vals[$i] . "\n";
+    $result .= kv_parse(@jstat);
+
+    my @jstack = `jstack $pid`;
+    my $threads = 0;
+    my $threads_running = 0;
+    for my $line (@jstack) {
+        if (index($line, '"') != -1) {
+            $threads += 1;
+        }
+        if (index($line, 'java.lang.Thread.State: RUNNABLE') != -1) {
+            $threads_running += 1;
+        }
     }
+    $result .= "threads $threads\n";
+    $result .= "threads_running $threads_running\n";
+
+    my @ps = `ps -o pcpu,rss -p $pid`;
+    $result .= kv_parse(@ps);
+
     return $result;
 
+}
+
+sub kv_parse {
+    my @kv_data = @_;
+
+    map { s/^\s+|\s+$// } @kv_data;
+    my @kv_keys = split(/\s+/, $kv_data[0]);
+    my @kv_vals = split(/\s+/, $kv_data[1]);
+
+    my $result = '';
+    for my $i (0 .. $#kv_keys) {
+        $result .= "$kv_keys[$i] $kv_vals[$i]\n";
+    }
+
+    return $result;
 }
 
 my $help = 0;
