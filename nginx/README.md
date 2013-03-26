@@ -20,8 +20,7 @@ Add the following into Nginx configuration:
 
 <pre>
 server {
-    listen 80;
-    server_name localhost;
+    listen 10061;
     location /nginx_status {
         stub_status on;
         access_log off;
@@ -31,7 +30,7 @@ server {
 }
 </pre>
 
-Reload Nginx, and use `curl http://localhost/nginx_status` to get the statistics.
+Reload Nginx, and use `curl http://127.0.0.1:10061/nginx_status` to get the statistics.
 
 ### Add User Parameters
 

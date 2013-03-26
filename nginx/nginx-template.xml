@@ -335,7 +335,7 @@
             <macros>
                 <macro>
                     <macro>{$NGINX_STATUS_URL}</macro>
-                    <value>http://127.0.0.1/nginx_status</value>
+                    <value>http://127.0.0.1:10061/nginx_status</value>
                 </macro>
             </macros>
             <templates/>
