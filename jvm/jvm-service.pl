@@ -61,10 +61,35 @@ sub kv_parse {
     return $result;
 }
 
+sub process {
+    my $client = shift;
+
+    my $input = <$client>;
+    chomp($input);
+
+    if ($input =~ /^JVMPORT ([0-9]+)$/) {
+
+        print "JVMPORT is $1.\n";
+
+        if (my $result = stats($1)) {
+            print $client "OK\n", $result, "\n";
+            print "[$$] OK\n";
+        } else {
+            print $client "ERROR\n";
+            print "[$$] ERROR\n";
+        }
+
+    } else {
+        print "[$$] Invalid input '$input'.\n";
+    }
+
+    close($client);
+}
+
 my $help = 0;
 my $port = 10060;
 
-GetOptions ('help|?' => \$help, 'port=i' => \$port) || pod2usage(2);
+GetOptions('help|?' => \$help, 'port=i' => \$port) || pod2usage(2);
 pod2usage(1) if $help;
 
 print "Bind to port $port.\n";
@@ -76,32 +101,48 @@ my $server = IO::Socket::INET->new(
     Listen => SOMAXCONN
 ) || die "Unable to create server.\n";
 
-while (my $client = $server->accept()) {
+# signal handlers
 
-    my $input = <$client>;
-    chomp($input);
+sub REAPER {
+    my $pid;
+    while (($pid = waitpid(-1, 'WNOHANG')) > 0) {
+        print "SIGCHLD pid $pid\n";
+    }
+}
 
-    if ($input =~ /^JVMPORT ([0-9]+)$/) {
+my $interrupted = 0;
 
-        print "JVMPORT is $1.\n";
+sub INTERRUPTER {
+    $interrupted = 1;
+}
 
-        if (my $result = stats($1)) {
-            print $client "OK\n", $result, "\n";
-            print "OK\n";
+$SIG{CHLD} = \&REAPER;
+$SIG{TERM} = \&INTERRUPTER;
+$SIG{INT} = \&INTERRUPTER;
+
+while (!$interrupted) {
+
+    if (my $client = $server->accept()) {
+
+        my $pid = fork();
+
+        if ($pid > 0) {
+            close($client);
+            print "forked child pid $pid\n";
+        } elsif ($pid == 0) {
+            close($server);
+            process($client);
+            exit;
         } else {
-            print $client "ERROR\n";
-            print "ERROR\n";
+            print "unable to fork\n";
         }
 
-    } else {
-        print "Invalid input '$input'.\n";
     }
 
-} continue {
-    close($client);
 }
 
 close($server);
+print "Service quit.\n";
 
 __END__
 
