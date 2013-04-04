@@ -4,6 +4,7 @@ use strict;
 use Getopt::Long;
 use Pod::Usage;
 use IO::Socket::INET;
+use POSIX 'setsid';
 
 sub stats {
     my $jvmport = shift(@_);
@@ -86,11 +87,31 @@ sub process {
     close($client);
 }
 
+sub daemonize {
+    exit if fork();
+    chdir('/');
+    umask(0);
+    setsid();
+    exit if fork();
+    open STDIN, '<', '/dev/null';
+    open STDOUT, '>>', '/tmp/jvm-service.log';
+    open STDERR, '>&', \*STDOUT;
+}
+
 my $help = 0;
 my $port = 10060;
+my $daemonize = 0;
 
-GetOptions('help|?' => \$help, 'port=i' => \$port) || pod2usage(2);
+GetOptions(
+    'help|?' => \$help,
+    'port=i' => \$port,
+    'daemonize' => \$daemonize
+) || pod2usage(2);
 pod2usage(1) if $help;
+
+if ($daemonize) {
+    daemonize();
+}
 
 print "Bind to port $port.\n";
 

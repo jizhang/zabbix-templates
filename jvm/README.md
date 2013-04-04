@@ -16,7 +16,9 @@ This package uses `jstat` and `jstack` commands to gather information of jVM.
 
 Since the Zabbix agent runs in zabbix user, making it impossible to attache to JVMs running under other users. The solution is to start a daemon under that user and provide socket access to gather the information.
 
-$ nohup jvm-service.pl >/dev/null 2>&1 &
+$ ./jvm-service.pl -d
+
+It will write logs into /tmp/jvm-service.log
 
 ### Install Script and Add User Parameters
 
