@@ -26,6 +26,8 @@ sub stats {
         return 2;
     }
 
+    open my $fd, "| $zabbix_bin -s \"$host\" -i-";
+
     while (<$client>) {
         chomp;
         my ($key, $value) = split /\s+/;
@@ -34,9 +36,10 @@ sub stats {
         }
         $key = lc $key;
         $key =~ s/%/p/g;
-        `$zabbix_bin -s "$host" -k "jvm.$key" -o "$value"`
+        print $fd "- jvm.$key $value\n";
     }
 
+    close($fd);
     close($client);
 
     print COLLECTOR_UP;
