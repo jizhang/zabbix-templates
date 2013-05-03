@@ -26,7 +26,7 @@ sub stats {
         return 2;
     }
 
-    open my $fd, "| $zabbix_bin -s \"$host\" -i-";
+    open my $fd, "| $zabbix_bin -s \"$host\" -i- >/dev/null 2>&1";
 
     while (<$client>) {
         chomp;
