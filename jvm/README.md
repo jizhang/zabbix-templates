@@ -34,3 +34,6 @@ HOW IT WORKS
 To gather information more effectively, I didn't use a lot of user parameters in the configuration file, to run multiple times. Instead, I used the 'zabbix agent trapper' data type, and run another script sending multiple data items to zabbix server.
 
 Again, instead of setup a cron job for the script, I used another 'zabbix agent' data type to let the server trigger this script.
+
+In case the `jstat` command spends more than 3 seconds, which surpasses the timeout limit of Zabbix, so you may want to adjust the `Timeout` option in *both* Zabbix server and agent configuration.
+
