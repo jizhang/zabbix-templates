@@ -75,7 +75,7 @@
                     <value_type>3</value_type>
                     <allowed_hosts/>
                     <units/>
-                    <delta>2</delta>
+                    <delta>1</delta>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
                     <snmpv3_authpassphrase/>
@@ -273,7 +273,7 @@
                     <value_type>3</value_type>
                     <allowed_hosts/>
                     <units/>
-                    <delta>2</delta>
+                    <delta>1</delta>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
                     <snmpv3_authpassphrase/>
@@ -312,7 +312,7 @@
                     <value_type>3</value_type>
                     <allowed_hosts/>
                     <units/>
-                    <delta>2</delta>
+                    <delta>1</delta>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
                     <snmpv3_authpassphrase/>
@@ -390,7 +390,7 @@
                     <value_type>3</value_type>
                     <allowed_hosts/>
                     <units/>
-                    <delta>2</delta>
+                    <delta>1</delta>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
                     <snmpv3_authpassphrase/>
@@ -429,7 +429,7 @@
                     <value_type>3</value_type>
                     <allowed_hosts/>
                     <units/>
-                    <delta>2</delta>
+                    <delta>1</delta>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
                     <snmpv3_authpassphrase/>
@@ -468,7 +468,7 @@
                     <value_type>3</value_type>
                     <allowed_hosts/>
                     <units/>
-                    <delta>2</delta>
+                    <delta>1</delta>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
                     <snmpv3_authpassphrase/>
