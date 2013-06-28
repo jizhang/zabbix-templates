@@ -50,7 +50,7 @@ fi
 # 
 # Extract data from nginx stats
 #
-RESULT=$(echo "$NGINX_STATS" | awk 'match($0, "^'"$ZBX_REQ_DATA"':\\s+(.*)", a) { print a[1] }')
+RESULT=$(echo "$NGINX_STATS" | awk 'match($0, "^'"$ZBX_REQ_DATA"':[[:space:]]+(.*)", a) { print a[1] }')
 if [ $? -ne 0 -o -z "$RESULT" ]; then
     echo $ERROR_WRONG_PARAM
     exit 1
