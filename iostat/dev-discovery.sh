@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEVICES=`iostat | awk '{ if ($1 ~ "^([sh]d[a-z])$") { print $1 } }'`
+DEVICES=`iostat | awk '{ if ($1 ~ "^([shxv]|xv)d[a-z]$") { print $1 } }'`
 
 COUNT=`echo "$DEVICES" | wc -l`
 INDEX=0
