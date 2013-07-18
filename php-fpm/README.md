@@ -20,6 +20,7 @@ Since php-fpm's statistics is collected by different pools, so you need to creat
 
 Add the following lines to Nginx configuration:
 
+```
 server {
     listen 10061;
 
@@ -29,6 +30,7 @@ server {
         include fastcgi_params;
     }
 }
+```
 
 After restarting both php-fpm and nginx, try the following command to test:
 
