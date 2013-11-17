@@ -28,7 +28,7 @@ class Job(object):
         result['file_count'] = mo.group(1)
         result['block_count'] = mo.group(2)
 
-        mo = re.search('Heap Size is ([0-9.]+ [MGT]B) / ([0-9.]+ [MGT]B)', content)
+        mo = re.search('Heap Size is ([0-9.]+ [KMGTP]?B) / ([0-9.]+ [KMGTP]?B)', content)
         result['heap_used'] = self.regulate_size(mo.group(1))
         result['heap_total'] = self.regulate_size(mo.group(2))
 
@@ -55,7 +55,27 @@ class Job(object):
         result['node_decom'] = dfsmap['Decommissioning Nodes']
         result['block_under'] = dfsmap['Number of Under-Replicated Blocks']
 
-        print self.format_result(result)
+        self.send_result(result)
+
+    def send_result(self, result):
+
+        result = self.format_result(result)
+
+        cmd = [self.args.zabbix_sender]
+        cmd.extend(['-z', self.args.zabbix_server])
+        cmd.extend(['-p', self.args.zabbix_port])
+        cmd.extend(['-s', self.args.host])
+        cmd.extend(['-i', '-'])
+
+        p = subprocess.Popen((str(s) for s in cmd),
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+
+        print 'Sending:'
+        print result
+        print 'Result:'
+        print p.communicate(result)
 
     def format_result(self, result):
         lines = []
@@ -71,23 +91,34 @@ class Job(object):
         except ValueError:
             return 0
 
-        if unit == 'GB':
-            return size * 1024
+        if unit == 'KB':
+            size = size * 1024
+        elif unit == 'MB':
+            size = size * 1024 ** 2
+        elif unit == 'GB':
+            size = size * 1024 ** 3
         elif unit == 'TB':
-            return size * 1024 * 1024
-        else:
-            return size
+            size = size * 1024 ** 4
+        elif unit == 'PB':
+            size = size * 1024 ** 5
+
+        return int(round(size))
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Hadoop metrics collector for Zabbix.')
+
     parser.add_argument('-t', '--type', required=True, help='collector type',
                         choices=['namenode', 'datanode', 'jobtracker', 'tasktracker'])
-    parser.add_argument('-s', '--host', required=True, help='zabbix host name')
-    parser.add_argument('--zabbix-sender', default='zabbix_sender')
-    parser.add_argument('--zabbix-conf')
+
     parser.add_argument('--namenode-host', default='127.0.0.1')
-    parser.add_argument('--namenode-port', default=50070, type=int)
+    parser.add_argument('--namenode-port', type=int, default=50070)
+
+    parser.add_argument('--zabbix-sender', default='zabbix_sender')
+    parser.add_argument('-z', '--zabbix-server', required=True, help='zabbix server IP')
+    parser.add_argument('-p', '--zabbix-port', type=int, default=10051)
+    parser.add_argument('-s', '--host', required=True, help='hostname recognized by zabbix')
+
     args = parser.parse_args()
 
     Job(args).run()
