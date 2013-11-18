@@ -102,7 +102,33 @@ class Job(object):
         result['node_excluded'] = jtmap['Excluded Nodes']
         
         result['submission_total'] = jtmap['Total Submissions']
-
+        
+        for line in lines:
+            if 'Running Jobs' in line:
+                break
+                
+        job_running = 0
+        for line in lines:
+            if 'Completed Jobs' in line:
+                break
+            if 'id="job_' in line:
+                job_running += 1
+                
+        result['job_running'] = job_running
+        
+        for line in lines:
+            if 'Failed Jobs' in line:
+                break
+                
+        job_failed = 0
+        for line in lines:
+            if 'Retired Jobs' in line:
+                break
+            if 'id="job_' in line:
+                job_failed += 1
+                
+        result['job_failed'] = job_failed
+        
         print self.format_result(result)    
 
     def send_result(self, result):
