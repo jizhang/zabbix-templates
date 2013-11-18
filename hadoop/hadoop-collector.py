@@ -7,6 +7,8 @@ import urllib2
 import re
 import subprocess
 
+PTRN_TAG = re.compile('<[^>]+>')
+
 class Job(object):
 
     def __init__(self, args):
@@ -37,7 +39,7 @@ class Job(object):
                 break
 
         dfstable = re.sub('<tr[^>]*>', '\n', dfstable)
-        dfstable = re.sub('<[^>]*>', '', dfstable)
+        dfstable = PTRN_TAG.sub('', dfstable)
         dfsmap = {}
         for line in dfstable.split('\n'):
             try:
@@ -56,10 +58,59 @@ class Job(object):
         result['block_under'] = dfsmap['Number of Under-Replicated Blocks']
 
         self.send_result(result)
+        
+    def collect_jobtracker(self):
+        
+        f = urllib2.urlopen('http://%s:%d/jobtracker.jsp' % \
+                            (self.args.jobtracker_host, self.args.jobtracker_port))
+        content = f.read()
+        f.close()
+
+        result = {}
+
+        mo = re.search('Heap Size is ([0-9.]+ [KMGTP]?B)/([0-9.]+ [KMGTP]?B)', content)
+        result['heap_used'] = self.regulate_size(mo.group(1))
+        result['heap_total'] = self.regulate_size(mo.group(2))
+        
+        lines = iter(content.split('\n'))
+        for jthead in lines:
+            if 'Running Map Tasks' in jthead:
+                jtbody = lines.next()
+                break
+                
+        iter_head = re.finditer('<th[^>]*>(.*?)</th>', jthead)
+        iter_body = re.finditer('<td[^>]*>(.*?)</td>', jtbody)
+        
+        jtmap = {}
+        for mo_head in iter_head:
+            mo_body = iter_body.next()
+            jtmap[mo_head.group(1).strip()] = PTRN_TAG.sub('', mo_body.group(1)).strip()
+        
+        result['map_running'] = jtmap['Running Map Tasks']
+        result['map_occupied'] = jtmap['Occupied Map Slots']
+        result['map_reserved'] = jtmap['Reserved Map Slots']
+        result['map_capacity'] = jtmap['Map Task Capacity']
+        
+        result['reduce_running'] = jtmap['Running Reduce Tasks']
+        result['reduce_occupied'] = jtmap['Occupied Reduce Slots']
+        result['reduce_reserved'] = jtmap['Reserved Reduce Slots']
+        result['reduce_capacity'] = jtmap['Reduce Task Capacity']
+        
+        result['node_count'] = jtmap['Nodes']
+        result['node_black'] = jtmap['Blacklisted Nodes']
+        result['node_gray'] = jtmap['Graylisted Nodes']
+        result['node_excluded'] = jtmap['Excluded Nodes']
+        
+        result['submission_total'] = jtmap['Total Submissions']
+
+        print self.format_result(result)    
 
     def send_result(self, result):
 
         result = self.format_result(result)
+        
+        print 'Sending:'
+        print result
 
         cmd = [self.args.zabbix_sender]
         cmd.extend(['-z', self.args.zabbix_server])
@@ -71,9 +122,7 @@ class Job(object):
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-
-        print 'Sending:'
-        print result
+        
         print 'Result:'
         print p.communicate(result)
 
@@ -113,6 +162,9 @@ if __name__ == '__main__':
 
     parser.add_argument('--namenode-host', default='127.0.0.1')
     parser.add_argument('--namenode-port', type=int, default=50070)
+    
+    parser.add_argument('--jobtracker-host', default='127.0.0.1')
+    parser.add_argument('--jobtracker-port', type=int, default=50030)
 
     parser.add_argument('--zabbix-sender', default='zabbix_sender')
     parser.add_argument('-z', '--zabbix-server', required=True, help='zabbix server IP')
