@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2013-11-19T07:04:37Z</date>
+    <date>2013-11-19T07:05:08Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -9,8 +9,8 @@
     </groups>
     <templates>
         <template>
-            <template>Template Hadoop NameNode</template>
-            <name>Template Hadoop NameNode</name>
+            <template>Template Hadoop JobTracker</template>
+            <name>Template Hadoop JobTracker</name>
             <groups>
                 <group>
                     <name>Templates</name>
@@ -18,17 +18,17 @@
             </groups>
             <applications>
                 <application>
-                    <name>NameNode</name>
+                    <name>JobTracker</name>
                 </application>
             </applications>
             <items>
                 <item>
-                    <name>Blocks</name>
+                    <name>Blacklisted Nodes</name>
                     <type>2</type>
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>hadoop.namenode.block_count</key>
+                    <key>hadoop.jobtracker.node_black</key>
                     <delay>0</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -56,57 +56,18 @@
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>NameNode</name>
+                            <name>JobTracker</name>
                         </application>
                     </applications>
                     <valuemap/>
                 </item>
                 <item>
-                    <name>Configured Capacity</name>
+                    <name>Excluded Nodes</name>
                     <type>2</type>
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>hadoop.namenode.dfs_capacity</key>
-                    <delay>0</delay>
-                    <history>90</history>
-                    <trends>365</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
-                    <units>B</units>
-                    <delta>0</delta>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privpassphrase/>
-                    <formula>1</formula>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <data_type>0</data_type>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>NameNode</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                </item>
-                <item>
-                    <name>Dead Nodes</name>
-                    <type>2</type>
-                    <snmp_community/>
-                    <multiplier>0</multiplier>
-                    <snmp_oid/>
-                    <key>hadoop.namenode.node_dead</key>
+                    <key>hadoop.jobtracker.node_excluded</key>
                     <delay>0</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -134,18 +95,18 @@
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>NameNode</name>
+                            <name>JobTracker</name>
                         </application>
                     </applications>
                     <valuemap/>
                 </item>
                 <item>
-                    <name>Decommissioning Nodes</name>
+                    <name>Failed Jobs</name>
                     <type>2</type>
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>hadoop.namenode.node_decom</key>
+                    <key>hadoop.jobtracker.job_failed</key>
                     <delay>0</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -173,96 +134,18 @@
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>NameNode</name>
+                            <name>JobTracker</name>
                         </application>
                     </applications>
                     <valuemap/>
                 </item>
                 <item>
-                    <name>DFS Remaning</name>
+                    <name>Graylisted Nodes</name>
                     <type>2</type>
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>hadoop.namenode.dfs_remaining</key>
-                    <delay>0</delay>
-                    <history>90</history>
-                    <trends>365</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
-                    <units>B</units>
-                    <delta>0</delta>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privpassphrase/>
-                    <formula>1</formula>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <data_type>0</data_type>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>NameNode</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                </item>
-                <item>
-                    <name>DFS Used</name>
-                    <type>2</type>
-                    <snmp_community/>
-                    <multiplier>0</multiplier>
-                    <snmp_oid/>
-                    <key>hadoop.namenode.dfs_used</key>
-                    <delay>0</delay>
-                    <history>90</history>
-                    <trends>365</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
-                    <units>B</units>
-                    <delta>0</delta>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privpassphrase/>
-                    <formula>1</formula>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <data_type>0</data_type>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>NameNode</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                </item>
-                <item>
-                    <name>Files and Directories</name>
-                    <type>2</type>
-                    <snmp_community/>
-                    <multiplier>0</multiplier>
-                    <snmp_oid/>
-                    <key>hadoop.namenode.file_count</key>
+                    <key>hadoop.jobtracker.node_gray</key>
                     <delay>0</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -290,7 +173,7 @@
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>NameNode</name>
+                            <name>JobTracker</name>
                         </application>
                     </applications>
                     <valuemap/>
@@ -301,7 +184,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>hadoop.namenode.heap_total</key>
+                    <key>hadoop.jobtracker.heap_total</key>
                     <delay>0</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -329,7 +212,7 @@
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>NameNode</name>
+                            <name>JobTracker</name>
                         </application>
                     </applications>
                     <valuemap/>
@@ -340,7 +223,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>hadoop.namenode.heap_used</key>
+                    <key>hadoop.jobtracker.heap_used</key>
                     <delay>0</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -368,57 +251,18 @@
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>NameNode</name>
+                            <name>JobTracker</name>
                         </application>
                     </applications>
                     <valuemap/>
                 </item>
                 <item>
-                    <name>Live Nodes</name>
-                    <type>2</type>
-                    <snmp_community/>
-                    <multiplier>0</multiplier>
-                    <snmp_oid/>
-                    <key>hadoop.namenode.node_alive</key>
-                    <delay>0</delay>
-                    <history>90</history>
-                    <trends>365</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <delta>0</delta>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privpassphrase/>
-                    <formula>1</formula>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <data_type>0</data_type>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>NameNode</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                </item>
-                <item>
-                    <name>NameNode Collector</name>
+                    <name>JobTracker Collector</name>
                     <type>0</type>
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>hadoop.namenode.collector[{HOST.HOST}]</key>
+                    <key>hadoop.jobtracker.collector[{HOST.HOST}]</key>
                     <delay>60</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -446,7 +290,7 @@
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>NameNode</name>
+                            <name>JobTracker</name>
                         </application>
                     </applications>
                     <valuemap>
@@ -454,51 +298,12 @@
                     </valuemap>
                 </item>
                 <item>
-                    <name>Non DFS Used</name>
+                    <name>Map Task Capacity</name>
                     <type>2</type>
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>hadoop.namenode.dfs_used_other</key>
-                    <delay>0</delay>
-                    <history>90</history>
-                    <trends>365</trends>
-                    <status>0</status>
-                    <value_type>3</value_type>
-                    <allowed_hosts/>
-                    <units>B</units>
-                    <delta>0</delta>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privpassphrase/>
-                    <formula>1</formula>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <data_type>0</data_type>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>NameNode</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                </item>
-                <item>
-                    <name>Number of Under-Replicated Blocks</name>
-                    <type>2</type>
-                    <snmp_community/>
-                    <multiplier>0</multiplier>
-                    <snmp_oid/>
-                    <key>hadoop.namenode.block_under</key>
+                    <key>hadoop.jobtracker.map_capacity</key>
                     <delay>0</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -526,7 +331,397 @@
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>NameNode</name>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Nodes</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.node_count</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Occupied Map Slots</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.map_occupied</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Occupied Reduce Slots</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.reduce_occupied</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Reduce Task Capacity</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.reduce_capacity</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Reserved Map Slots</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.map_reserved</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Reserved Reduce Slots</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.reduce_reserved</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Running Jobs</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.job_running</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Running Map Tasks</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.map_running</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Running Reduce Tasks</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.reduce_running</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                </item>
+                <item>
+                    <name>Total Submissions</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>hadoop.jobtracker.submission_total</key>
+                    <delay>0</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>2</delta>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JobTracker</name>
                         </application>
                     </applications>
                     <valuemap/>
@@ -535,12 +730,12 @@
             <discovery_rules/>
             <macros>
                 <macro>
-                    <macro>{$NAMENODE_HOST}</macro>
+                    <macro>{$JOBTRACKER_HOST}</macro>
                     <value>127.0.0.1</value>
                 </macro>
                 <macro>
-                    <macro>{$NAMENODE_PORT}</macro>
-                    <value>50070</value>
+                    <macro>{$JOBTRACKER_PORT}</macro>
+                    <value>50030</value>
                 </macro>
             </macros>
             <templates/>
@@ -549,63 +744,7 @@
     </templates>
     <graphs>
         <graph>
-            <name>HDFS Capacity</name>
-            <width>900</width>
-            <height>200</height>
-            <yaxismin>0.0000</yaxismin>
-            <yaxismax>100.0000</yaxismax>
-            <show_work_period>1</show_work_period>
-            <show_triggers>1</show_triggers>
-            <type>1</type>
-            <show_legend>1</show_legend>
-            <show_3d>0</show_3d>
-            <percent_left>0.0000</percent_left>
-            <percent_right>0.0000</percent_right>
-            <ymin_type_1>0</ymin_type_1>
-            <ymax_type_1>0</ymax_type_1>
-            <ymin_item_1>0</ymin_item_1>
-            <ymax_item_1>0</ymax_item_1>
-            <graph_items>
-                <graph_item>
-                    <sortorder>0</sortorder>
-                    <drawtype>0</drawtype>
-                    <color>FF3333</color>
-                    <yaxisside>0</yaxisside>
-                    <calc_fnc>2</calc_fnc>
-                    <type>0</type>
-                    <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.dfs_used</key>
-                    </item>
-                </graph_item>
-                <graph_item>
-                    <sortorder>1</sortorder>
-                    <drawtype>0</drawtype>
-                    <color>FFFF33</color>
-                    <yaxisside>0</yaxisside>
-                    <calc_fnc>2</calc_fnc>
-                    <type>0</type>
-                    <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.dfs_used_other</key>
-                    </item>
-                </graph_item>
-                <graph_item>
-                    <sortorder>2</sortorder>
-                    <drawtype>0</drawtype>
-                    <color>3333FF</color>
-                    <yaxisside>0</yaxisside>
-                    <calc_fnc>2</calc_fnc>
-                    <type>0</type>
-                    <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.dfs_remaining</key>
-                    </item>
-                </graph_item>
-            </graph_items>
-        </graph>
-        <graph>
-            <name>HDFS Files and Directories</name>
+            <name>Hadoop Jobs</name>
             <width>900</width>
             <height>200</height>
             <yaxismin>0.0000</yaxismin>
@@ -625,19 +764,31 @@
                 <graph_item>
                     <sortorder>0</sortorder>
                     <drawtype>0</drawtype>
-                    <color>3333FF</color>
+                    <color>00EE00</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
                     <type>0</type>
                     <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.file_count</key>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.job_running</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>0000EE</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.submission_total</key>
                     </item>
                 </graph_item>
             </graph_items>
         </graph>
         <graph>
-            <name>HDFS NameNode Heap Size</name>
+            <name>Hadoop JobTracker Heap Size</name>
             <width>900</width>
             <height>200</height>
             <yaxismin>0.0000</yaxismin>
@@ -657,31 +808,31 @@
                 <graph_item>
                     <sortorder>0</sortorder>
                     <drawtype>1</drawtype>
-                    <color>3333FF</color>
+                    <color>0000EE</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
                     <type>0</type>
                     <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.heap_total</key>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.heap_total</key>
                     </item>
                 </graph_item>
                 <graph_item>
                     <sortorder>1</sortorder>
                     <drawtype>1</drawtype>
-                    <color>FF3333</color>
+                    <color>EE0000</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
                     <type>0</type>
                     <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.heap_used</key>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.heap_used</key>
                     </item>
                 </graph_item>
             </graph_items>
         </graph>
         <graph>
-            <name>HDFS Nodes</name>
+            <name>Hadoop Mappers</name>
             <width>900</width>
             <height>200</height>
             <yaxismin>0.0000</yaxismin>
@@ -701,37 +852,161 @@
                 <graph_item>
                     <sortorder>0</sortorder>
                     <drawtype>0</drawtype>
-                    <color>00AA00</color>
+                    <color>0000EE</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
                     <type>0</type>
                     <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.node_alive</key>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.map_capacity</key>
                     </item>
                 </graph_item>
                 <graph_item>
                     <sortorder>1</sortorder>
                     <drawtype>0</drawtype>
-                    <color>AA0000</color>
+                    <color>EE0000</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
                     <type>0</type>
                     <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.node_dead</key>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.map_occupied</key>
                     </item>
                 </graph_item>
                 <graph_item>
                     <sortorder>2</sortorder>
                     <drawtype>0</drawtype>
-                    <color>AAAAAA</color>
+                    <color>00EE00</color>
                     <yaxisside>0</yaxisside>
                     <calc_fnc>2</calc_fnc>
                     <type>0</type>
                     <item>
-                        <host>Template Hadoop NameNode</host>
-                        <key>hadoop.namenode.node_decom</key>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.map_running</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Hadoop Nodes</name>
+            <width>900</width>
+            <height>200</height>
+            <yaxismin>0.0000</yaxismin>
+            <yaxismax>100.0000</yaxismax>
+            <show_work_period>1</show_work_period>
+            <show_triggers>1</show_triggers>
+            <type>0</type>
+            <show_legend>1</show_legend>
+            <show_3d>0</show_3d>
+            <percent_left>0.0000</percent_left>
+            <percent_right>0.0000</percent_right>
+            <ymin_type_1>0</ymin_type_1>
+            <ymax_type_1>0</ymax_type_1>
+            <ymin_item_1>0</ymin_item_1>
+            <ymax_item_1>0</ymax_item_1>
+            <graph_items>
+                <graph_item>
+                    <sortorder>0</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>0000EE</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.node_count</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>EE0000</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.node_black</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>000000</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.node_gray</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>3</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>BBBBBB</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.node_excluded</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Hadoop Reducers</name>
+            <width>900</width>
+            <height>200</height>
+            <yaxismin>0.0000</yaxismin>
+            <yaxismax>100.0000</yaxismax>
+            <show_work_period>1</show_work_period>
+            <show_triggers>1</show_triggers>
+            <type>0</type>
+            <show_legend>1</show_legend>
+            <show_3d>0</show_3d>
+            <percent_left>0.0000</percent_left>
+            <percent_right>0.0000</percent_right>
+            <ymin_type_1>0</ymin_type_1>
+            <ymax_type_1>0</ymax_type_1>
+            <ymin_item_1>0</ymin_item_1>
+            <ymax_item_1>0</ymax_item_1>
+            <graph_items>
+                <graph_item>
+                    <sortorder>0</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>0000EE</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.reduce_capacity</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>EE0000</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.reduce_occupied</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>00EE00</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template Hadoop JobTracker</host>
+                        <key>hadoop.jobtracker.reduce_running</key>
                     </item>
                 </graph_item>
             </graph_items>

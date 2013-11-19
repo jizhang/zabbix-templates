@@ -7,6 +7,8 @@ import urllib2
 import re
 import subprocess
 
+SERVICE_UP = 1
+SERVICE_DOWN = 0
 PTRN_TAG = re.compile('<[^>]+>')
 
 class Job(object):
@@ -15,7 +17,12 @@ class Job(object):
         self.args = args
 
     def run(self):
-        getattr(self, 'collect_%s' % self.args.type)()
+        try:
+            getattr(self, 'collect_%s' % self.args.type)()
+        except Exception, e:
+            print SERVICE_DOWN
+        else:
+            print SERVICE_UP        
 
     def collect_namenode(self):
 
@@ -129,18 +136,17 @@ class Job(object):
                 
         result['job_failed'] = job_failed
         
-        print self.format_result(result)    
+        self.send_result(result)
 
     def send_result(self, result):
 
         result = self.format_result(result)
         
-        print 'Sending:'
-        print result
+        self.log('Sending:')
+        self.log(result)
 
-        cmd = [self.args.zabbix_sender]
-        cmd.extend(['-z', self.args.zabbix_server])
-        cmd.extend(['-p', self.args.zabbix_port])
+        cmd = ['%s/bin/zabbix_sender' % self.args.zabbix_home]
+        cmd.extend(['-c', '%s/etc/zabbix_agentd.conf' % self.args.zabbix_home])
         cmd.extend(['-s', self.args.host])
         cmd.extend(['-i', '-'])
 
@@ -149,13 +155,13 @@ class Job(object):
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
         
-        print 'Result:'
-        print p.communicate(result)
+        self.log('Result:')
+        self.log(p.communicate(result)[0])
 
     def format_result(self, result):
         lines = []
         for k, v in result.iteritems():
-            lines.append('- hadoop.namenode.%s %s' % (k, v))
+            lines.append('- hadoop.%s.%s %s' % (self.args.type, k, v))
         return '\n'.join(lines)
 
     def regulate_size(self, size):
@@ -179,6 +185,10 @@ class Job(object):
 
         return int(round(size))
 
+    def log(self, msg):
+        sys.stderr.write(msg)
+        sys.stderr.write('\n')
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Hadoop metrics collector for Zabbix.')
@@ -192,11 +202,9 @@ if __name__ == '__main__':
     parser.add_argument('--jobtracker-host', default='127.0.0.1')
     parser.add_argument('--jobtracker-port', type=int, default=50030)
 
-    parser.add_argument('--zabbix-sender', default='zabbix_sender')
-    parser.add_argument('-z', '--zabbix-server', required=True, help='zabbix server IP')
-    parser.add_argument('-p', '--zabbix-port', type=int, default=10051)
+    parser.add_argument('-z', '--zabbix-home', default='/usr/local/zabbix-agent-ops')
     parser.add_argument('-s', '--host', required=True, help='hostname recognized by zabbix')
 
     args = parser.parse_args()
-
+    
     Job(args).run()
