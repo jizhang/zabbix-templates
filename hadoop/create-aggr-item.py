@@ -15,33 +15,57 @@ def main(args):
 
 def process(zapi, host):
 
-    host = zapi.host.get(filter={'host': host})
-    hostid = host[0]['hostid']
-
-    application = zapi.application.get(hostids=hostid, filter={'name': 'iostat'})
-    applicationid = application[0]['applicationid']
-
-    items = zapi.item.get(hostids=hostid,
-                          search={'key_': 'iostat'},
-                          startSearch=True,
-                          output=['key_', 'params'])
-    devices = {}
-    ptrn_device = re.compile(r'iostat\[([^,]+),\s*([^\]]+)\]')
-    for item in items:
-        mo = ptrn_device.match(item['key_'])
-        if mo is None:
-            continue
-        device_name = mo.group(1)
-        if device_name not in devices:
-            devices[device_name] = {}
-        device_info = devices[device_name]
-        device_info[mo.group(2)] = (item['itemid'], item['key_'], item['params'])
+    print host
 
     metrics = { # value_type, units, is_average
         'rkB/s' : (3, 'B', False),
         'wkB/s' : (3, 'B', False),
         '%util' : (0, '', True)
     }
+    process_metrics(zapi, host=host,
+                    application='iostat',
+                    search_key='iostat',
+                    key_pattern=r'iostat\[(?P<device>[^,]+),\s*(?P<metric>[^\]]+)\]',
+                    metrics=metrics,
+                    name_format='All Disk %s',
+                    key_format='iostat[all,%s]')
+
+    metrics = {
+        'in': (3, 'bps', False),
+        'out': (3, 'bps', False)
+    }
+    process_metrics(zapi, host=host,
+                    application='Network interfaces',
+                    search_key='net.if',
+                    key_pattern=r'net.if.(?P<metric>[^\[]+)\[(?P<device>[^\]]+)\]',
+                    metrics=metrics,
+                    name_format='All Network %s',
+                    key_format='net.if.%s[all]')
+
+def process_metrics(zapi, host, application, search_key, key_pattern, metrics, name_format, key_format):
+
+    host = zapi.host.get(filter={'host': host})
+    hostid = host[0]['hostid']
+
+    application = zapi.application.get(hostids=hostid, filter={'name': application})
+    applicationid = application[0]['applicationid']
+
+    items = zapi.item.get(hostids=hostid,
+                          search={'key_': search_key},
+                          startSearch=True,
+                          output=['key_', 'params'])
+    devices = {}
+    ptrn_device = re.compile(key_pattern)
+    for item in items:
+        mo = ptrn_device.match(item['key_'])
+        if mo is None:
+            continue
+        device_name = mo.group('device')
+        if device_name not in devices:
+            devices[device_name] = {}
+        device_info = devices[device_name]
+        device_info[mo.group('metric')] = (item['itemid'], item['key_'], item['params'])
+
     for metric, metric_info in metrics.iteritems():
         print metric
         keys = [v[metric][1] for k, v in devices.iteritems() if k != 'all']
@@ -54,10 +78,9 @@ def process(zapi, host):
 
         if metric not in devices['all']:
             print 'create', metric, params
-
             zapi.item.create(hostid=hostid,
-                             name='All Disk %s' % metric,
-                             key_='iostat[all,%s]' % metric,
+                             name=name_format % metric,
+                             key_=key_format % metric,
                              type=15,
                              value_type=metric_info[0],
                              params=params,
@@ -72,6 +95,7 @@ def process(zapi, host):
 
         else:
             print 'skip', metric
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
