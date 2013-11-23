@@ -37,15 +37,17 @@ def process(zapi, host):
         device_info = devices[device_name]
         device_info[mo.group(2)] = (item['itemid'], item['key_'], item['params'])
 
-    metrics = {
-        'rkB/s' : (3, 'B'),
-        'wkB/s' : (3, 'B'),
-        '%util' : (0, '')
+    metrics = { # value_type, units, is_average
+        'rkB/s' : (3, 'B', False),
+        'wkB/s' : (3, 'B', False),
+        '%util' : (0, '', True)
     }
     for metric, metric_info in metrics.iteritems():
         print metric
         keys = [v[metric][1] for k, v in devices.iteritems() if k != 'all']
-        params = '(%s)/%d' % ('+'.join('last("%s")' % key for key in keys), len(keys))
+        params = '+'.join('last("%s")' % key for key in keys)
+        if metric_info[2]:
+            params = '(%s)/%d' % (params, len(keys))
 
         if 'all' not in devices:
             devices['all'] = {}
