@@ -20,9 +20,10 @@ class Job(object):
         try:
             getattr(self, 'collect_%s' % self.args.type)()
         except Exception, e:
+            self.log(str(e))
             print SERVICE_DOWN
         else:
-            print SERVICE_UP        
+            print SERVICE_UP
 
     def collect_namenode(self):
 
@@ -65,9 +66,9 @@ class Job(object):
         result['block_under'] = dfsmap['Number of Under-Replicated Blocks']
 
         self.send_result(result)
-        
+
     def collect_jobtracker(self):
-        
+
         f = urllib2.urlopen('http://%s:%d/jobtracker.jsp' % \
                             (self.args.jobtracker_host, self.args.jobtracker_port))
         content = f.read()
@@ -78,70 +79,114 @@ class Job(object):
         mo = re.search('Heap Size is ([0-9.]+ [KMGTP]?B)/([0-9.]+ [KMGTP]?B)', content)
         result['heap_used'] = self.regulate_size(mo.group(1))
         result['heap_total'] = self.regulate_size(mo.group(2))
-        
+
         lines = iter(content.split('\n'))
         for jthead in lines:
             if 'Running Map Tasks' in jthead:
                 jtbody = lines.next()
                 break
-                
+
         iter_head = re.finditer('<th[^>]*>(.*?)</th>', jthead)
         iter_body = re.finditer('<td[^>]*>(.*?)</td>', jtbody)
-        
+
         jtmap = {}
         for mo_head in iter_head:
             mo_body = iter_body.next()
             jtmap[mo_head.group(1).strip()] = PTRN_TAG.sub('', mo_body.group(1)).strip()
-        
+
         result['map_running'] = jtmap['Running Map Tasks']
         result['map_occupied'] = jtmap['Occupied Map Slots']
         result['map_reserved'] = jtmap['Reserved Map Slots']
         result['map_capacity'] = jtmap['Map Task Capacity']
-        
+
         result['reduce_running'] = jtmap['Running Reduce Tasks']
         result['reduce_occupied'] = jtmap['Occupied Reduce Slots']
         result['reduce_reserved'] = jtmap['Reserved Reduce Slots']
         result['reduce_capacity'] = jtmap['Reduce Task Capacity']
-        
+
         result['node_count'] = jtmap['Nodes']
         result['node_black'] = jtmap['Blacklisted Nodes']
         result['node_gray'] = jtmap['Graylisted Nodes']
         result['node_excluded'] = jtmap['Excluded Nodes']
-        
+
         result['submission_total'] = jtmap['Total Submissions']
-        
+
         for line in lines:
             if 'Running Jobs' in line:
                 break
-                
+
         job_running = 0
         for line in lines:
             if 'Completed Jobs' in line:
                 break
             if 'id="job_' in line:
                 job_running += 1
-                
+
         result['job_running'] = job_running
-        
+
         for line in lines:
             if 'Failed Jobs' in line:
                 break
-                
+
         job_failed = 0
         for line in lines:
             if 'Retired Jobs' in line:
                 break
             if 'id="job_' in line:
                 job_failed += 1
-                
+
         result['job_failed'] = job_failed
-        
+
+        self.send_result(result)
+
+    def collect_tasktracker(self):
+
+        f = urllib2.urlopen('http://%s:%d/machines.jsp?type=active' % \
+                            (self.args.jobtracker_host, self.args.jobtracker_port))
+        content = f.read()
+        f.close()
+
+        lines = iter(content.split('\n'))
+        jthead = None
+        for line in lines:
+            if line.startswith('<tr><td><b>Name'):
+                jthead = line
+            elif jthead is not None:
+                jthead += line
+                if '</tr>' in line:
+                    break
+
+        jtbody = None
+        for line in lines:
+            if line.startswith('<tr>') \
+                    and self.args.host in line:
+                jtbody = line
+            elif jtbody is not None:
+                jtbody += line
+                if '</tr>' in line:
+                    break
+
+        iter_head = re.finditer('<td[^>]*>(.*?)</td>', jthead)
+        iter_body = re.finditer('<td[^>]*>(.*?)</td>', jtbody)
+        jtmap = {}
+        for mo_head in iter_head:
+            mo_body = iter_body.next()
+            jtmap[PTRN_TAG.sub('', mo_head.group(1)).strip()] = \
+                    PTRN_TAG.sub('', mo_body.group(1)).strip()
+
+        result = {}
+        result['task_running'] = jtmap['# running tasks']
+        result['task_capacity'] = int(jtmap['Max Map Tasks']) + int(jtmap['Max Reduce Tasks'])
+        result['task_failed'] = jtmap['Failures']
+        result['task_total'] = jtmap['Total Tasks Since Start']
+        result['task_succeeded'] = jtmap['Succeeded Tasks Since Start']
+
         self.send_result(result)
 
     def send_result(self, result):
 
         result = self.format_result(result)
-        
+
         self.log('Sending:')
         self.log(result)
 
@@ -154,7 +199,7 @@ class Job(object):
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-        
+
         self.log('Result:')
         self.log(p.communicate(result)[0])
 
@@ -198,7 +243,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--namenode-host', default='127.0.0.1')
     parser.add_argument('--namenode-port', type=int, default=50070)
-    
+
     parser.add_argument('--jobtracker-host', default='127.0.0.1')
     parser.add_argument('--jobtracker-port', type=int, default=50030)
 
@@ -206,5 +251,5 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--host', required=True, help='hostname recognized by zabbix')
 
     args = parser.parse_args()
-    
+
     Job(args).run()
