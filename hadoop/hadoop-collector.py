@@ -6,6 +6,7 @@ import argparse
 import urllib2
 import re
 import subprocess
+import traceback
 
 SERVICE_UP = 1
 SERVICE_DOWN = 0
@@ -19,8 +20,8 @@ class Job(object):
     def run(self):
         try:
             getattr(self, 'collect_%s' % self.args.type)()
-        except Exception, e:
-            self.log(str(e))
+        except Exception:
+            traceback.print_exc()
             print SERVICE_DOWN
         else:
             print SERVICE_UP
@@ -180,6 +181,54 @@ class Job(object):
         result['task_failed'] = jtmap['Failures']
         result['task_total'] = jtmap['Total Tasks Since Start']
         result['task_succeeded'] = jtmap['Succeeded Tasks Since Start']
+
+        self.send_result(result)
+
+    def collect_datanode(self):
+
+        f = urllib2.urlopen('http://%s:%d/dfsnodelist.jsp?whatNodes=LIVE' % \
+                            (self.args.namenode_host, self.args.namenode_port))
+        content = f.read()
+        f.close()
+
+        lines = iter(content.split('\n'))
+        for line in lines:
+            if line.startswith('<tr class="headerRow">'):
+                break
+        jthead = line
+
+        for line in lines:
+            if line.startswith('<tr') \
+                    and self.args.host in line:
+                break
+        jtbody = re.sub('<table[^>]*>.*?</table>', '', line)
+
+        iter_head = re.finditer('<th[^>]*>(.*?)(?=<th|$)', jthead)
+        iter_body = re.finditer('<td[^>]*>(.*?)(?=<td|$)', jtbody)
+        jtmap = {}
+        ptrn_quote = re.compile(r'\((.*?)\)')
+        for mo_head in iter_head:
+            mo_body = iter_body.next()
+
+            k = PTRN_TAG.sub('', mo_head.group(1))
+            if '(%)' in k:
+                continue
+
+            mo = ptrn_quote.search(k)
+            k = ptrn_quote.sub('', k).strip()
+            v = PTRN_TAG.sub('', mo_body.group(1)).strip()
+
+            if mo is not None:
+                jtmap[k] = '%s %s' % (v, mo.group(1))
+            else:
+                jtmap[k] = v
+
+        result = {}
+        result['dfs_capacity'] = self.regulate_size(jtmap['Configured Capacity'])
+        result['dfs_used'] = self.regulate_size(jtmap['Used'])
+        result['dfs_used_other'] = self.regulate_size(jtmap['Non DFS Used'])
+        result['dfs_remaining'] = self.regulate_size(jtmap['Remaining'])
+        result['block_count'] = jtmap['Blocks']
 
         self.send_result(result)
 
