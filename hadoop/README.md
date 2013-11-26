@@ -29,6 +29,14 @@ Import the following templates and apply them to the corresponding servers:
 
 And the `hadoop-basic-template.xml` consists of cluster-wise data aggregation items, so it should be applied to the master node.
 
+### Create Aggregated Items
+
+In order to get an cluster-wise aggregated data, such as disk util, we need to get it first from respective servers. LLD (Low Level Discovery) will produce all the disk devices on the server, but fails to provide an aggregated item for them.
+
+Here comes the `Zabbix calculated item`, we use a script (create-aggr-item.py) to create aggregated disk and network items for every nodes.
+
+Besides, in `hadoop-basic-template.xml` there's a macro named `{$CLUSTER_NAME}`, whose default value is `dw-hadoop`. So you need to put all slave nodes into a Zabbix host group named after this macro, so that the template item can calculate the correct data.
+
 HOW IT WORKS
 ------------
 
