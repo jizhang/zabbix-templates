@@ -18,8 +18,14 @@ ZBX_REQ_DATA="$1"
 ZBX_REQ_DATA_URL="$2"
 
 # Nginx defaults
-NGINX_STATUS_DEFAULT_URL="http://localhost:80/nginx_status"
+NGINX_STATUS_DEFAULT_URL="http://localhost:8002/"
 WGET_BIN="/usr/bin/wget"
+CURL_BIN="/usr/bin/curl"
+
+if [ ! -f $WGET_BIN ];
+then 
+    USE_CURL=true
+fi
 
 #
 # Error handling:
@@ -39,7 +45,11 @@ else
 fi
 
 # save the nginx stats in a variable for future parsing
-NGINX_STATS=$($WGET_BIN -q $URL -O - 2> /dev/null)
+if [ ! $USE_CURL = true ]; then
+  NGINX_STATS=$($WGET_BIN -q $URL -O - 2> /dev/null)
+else
+  NGINX_STATS=$($CURL_BIN -S -s $URL)
+fi
 
 # error during retrieve
 if [ $? -ne 0 -o -z "$NGINX_STATS" ]; then
@@ -47,7 +57,7 @@ if [ $? -ne 0 -o -z "$NGINX_STATS" ]; then
   exit 1
 fi
 
-# 
+#
 # Extract data from nginx stats
 #
 case $ZBX_REQ_DATA in
