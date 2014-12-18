@@ -7,6 +7,7 @@ import urllib2
 import re
 import subprocess
 import traceback
+import logging
 
 SERVICE_UP = 1
 SERVICE_DOWN = 0
@@ -18,6 +19,10 @@ class Job(object):
         self.args = args
 
     def run(self):
+
+        logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                            level=logging.INFO, stream=sys.stderr)
+
         try:
             getattr(self, 'collect_%s' % self.args.type)()
         except Exception:
@@ -26,13 +31,16 @@ class Job(object):
         else:
             print SERVICE_UP
 
-    def collect_namenode(self):
-
-        f = urllib2.urlopen('http://%s:%d/dfshealth.jsp' % \
-                            (self.args.namenode_host, self.args.namenode_port))
+    def request(self, url):
+        logging.info('Request: %s' % url)
+        f = urllib2.urlopen(url)
         content = f.read()
         f.close()
+        return content
 
+    def collect_namenode(self):
+
+        content = self.request('http://%s:%d/dfshealth.jsp' % (self.args.namenode_host, self.args.namenode_port))
         result = {}
 
         mo = re.search('([0-9]+) files and directories, ([0-9]+) blocks', content)
@@ -70,11 +78,7 @@ class Job(object):
 
     def collect_jobtracker(self):
 
-        f = urllib2.urlopen('http://%s:%d/jobtracker.jsp' % \
-                            (self.args.jobtracker_host, self.args.jobtracker_port))
-        content = f.read()
-        f.close()
-
+        content = self.request('http://%s:%d/jobtracker.jsp' % (self.args.jobtracker_host, self.args.jobtracker_port))
         result = {}
 
         mo = re.search('Heap Size is ([0-9.]+ [KMGTP]?B)/([0-9.]+ [KMGTP]?B)', content)
@@ -142,10 +146,7 @@ class Job(object):
 
     def collect_tasktracker(self):
 
-        f = urllib2.urlopen('http://%s:%d/machines.jsp?type=active' % \
-                            (self.args.jobtracker_host, self.args.jobtracker_port))
-        content = f.read()
-        f.close()
+        content = self.request('http://%s:%d/machines.jsp?type=active' % (self.args.jobtracker_host, self.args.jobtracker_port))
 
         lines = iter(content.split('\n'))
         jthead = None
@@ -178,7 +179,7 @@ class Job(object):
         result = {}
         result['task_running'] = jtmap['# running tasks']
         result['task_capacity'] = int(jtmap['Max Map Tasks']) + int(jtmap['Max Reduce Tasks'])
-        result['task_failed'] = jtmap['Failures']
+        result['task_failed'] = jtmap['Task Failures']
         result['task_total'] = jtmap['Total Tasks Since Start']
         result['task_succeeded'] = jtmap['Succeeded Tasks Since Start']
 
@@ -186,10 +187,7 @@ class Job(object):
 
     def collect_datanode(self):
 
-        f = urllib2.urlopen('http://%s:%d/dfsnodelist.jsp?whatNodes=LIVE' % \
-                            (self.args.namenode_host, self.args.namenode_port))
-        content = f.read()
-        f.close()
+        content = self.request('http://%s:%d/dfsnodelist.jsp?whatNodes=LIVE' % (self.args.namenode_host, self.args.namenode_port))
 
         lines = iter(content.split('\n'))
         for line in lines:
@@ -236,21 +234,20 @@ class Job(object):
 
         result = self.format_result(result)
 
-        self.log('Sending:')
-        self.log(result)
+        logging.info('Result:\n%s' % result)
 
         cmd = ['%s/bin/zabbix_sender' % self.args.zabbix_home]
         cmd.extend(['-c', '%s/etc/zabbix_agentd.conf' % self.args.zabbix_home])
         cmd.extend(['-s', self.args.host])
         cmd.extend(['-i', '-'])
 
+        logging.info('Command: %s' % ' '.join(str(s) for s in cmd))
         p = subprocess.Popen((str(s) for s in cmd),
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
 
-        self.log('Result:')
-        self.log(p.communicate(result)[0])
+        logging.info('Output:\n%s' % p.communicate(result)[0])
 
     def format_result(self, result):
         lines = []
@@ -279,9 +276,6 @@ class Job(object):
 
         return int(round(size))
 
-    def log(self, msg):
-        sys.stderr.write(msg)
-        sys.stderr.write('\n')
 
 if __name__ == '__main__':
 
