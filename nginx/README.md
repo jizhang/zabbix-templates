@@ -3,6 +3,13 @@ Template Nginx
 
 Show Nginx status in Zabbix.
 
+REQUIREMENTS
+------------
+
+* Zabbix Server **2.0**
+* Zabbix Agent **2.0**
+* Wget
+
 INSTALL
 -------
 
@@ -31,6 +38,10 @@ server {
 </pre>
 
 Reload Nginx, and use `curl http://127.0.0.1:10061/nginx_status` to get the statistics.
+
+### Install script nginx-check.sh
+
+Create directory /usr/local/zabbix-agent-ops/bin/ and copy nginx-check.sh to inside.
 
 ### Add User Parameters
 
