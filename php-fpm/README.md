@@ -3,6 +3,13 @@ Template php-fpm
 
 Show php-fpm statistics in Zabbix.
 
+REQUIREMENTS
+------------
+
+* Zabbix Server **2.0**
+* Zabbix Agent **2.0**
+* Wget
+
 INSTALL
 -------
 
@@ -35,6 +42,10 @@ server {
 After restarting both php-fpm and nginx, try the following command to test:
 
 $ curl http://127.0.0.1:10061/php-fpm_status
+
+### Install script php-fpm-check.sh
+
+Create directory /usr/local/zabbix-agent-ops/bin/ and copy php-fpm-check.sh to inside.
 
 ### Add User Parameters
 
