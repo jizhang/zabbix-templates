@@ -18,12 +18,12 @@ ZBX_REQ_DATA="$1"
 ZBX_REQ_DATA_URL="$2"
 
 # Nginx defaults
-NGINX_STATUS_DEFAULT_URL="http://localhost:8002/"
+NGINX_STATUS_DEFAULT_URL="http://localhost:80/nginx_status"
 WGET_BIN="/usr/bin/wget"
 CURL_BIN="/usr/bin/curl"
 
 if [ ! -f $WGET_BIN ];
-then 
+then
     USE_CURL=true
 fi
 
